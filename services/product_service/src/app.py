@@ -1,4 +1,4 @@
-from src.clients.post import PostRestClient
+from clients.post import PostRestClient
 
 
 def main():

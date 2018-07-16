@@ -14,20 +14,20 @@ class BaseRestClient(object):
         setup_logger()
 
     @log_requests
-    def __get(self, url, params):
+    def __get(self, url, params, *args, **kwargs):
         response = requests.get(url=url, params=params)
         return response
 
     @log_requests
-    def __post(self, url, data):
+    def __post(self, url, data, *args, **kwargs):
         pass
 
     @log_requests
-    def __put(self, url, data):
+    def __put(self, url, data, *args, **kwargs):
         pass
 
     @log_requests
-    def __patch(self, url, data):
+    def __patch(self, url, data, *args, **kwargs):
         pass
 
     @log_requests
@@ -46,6 +46,8 @@ class BaseRestClient(object):
             raise OperationNotSupported
 
         func = __METHODS[method]
+        params = kwargs.pop('params', {})
+        data = kwargs.pop('data', {})
         url = url.lstrip('/')
         if not url.startswith('http'):
             base_url = self.model.BASE_URL
@@ -55,7 +57,7 @@ class BaseRestClient(object):
 
             url = '%s/%s' % (base_url, url)
 
-        response = func(url, *args, **kwargs)
+        response = func(url, params=params, data=data, *args, **kwargs)
 
         if response.ok:
             result = json.loads(response.content)
@@ -70,7 +72,7 @@ class BaseRestClient(object):
                             self.model.DOCUMENT_NAME, id)
         data = self.__make_request('GET', url)
         if data:
-            model = self.model(data)
+            model = self.model(**data)
             return model
         else:
             raise APIException('%s not found' % id)
