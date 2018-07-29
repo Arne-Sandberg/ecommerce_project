@@ -72,7 +72,8 @@ def DEBUG(message, logger=None):
 
 def ERROR(message, logger=None):
     if not logger:
-        logger = logging.getLogger(APP_NAME) 
+        logger = logging.getLogger(APP_NAME)
+
 
 def STEP(message, logger=None):
     if not logger:
